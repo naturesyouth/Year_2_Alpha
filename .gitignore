@@ -106,4 +106,5 @@ ENV/
 *.gif
 
 # data source
+data/
 *.csv
