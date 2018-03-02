@@ -87,6 +87,8 @@ celerybeat-schedule
 venv/
 ENV/
 
+.virtual/
+
 # Spyder project settings
 .spyderproject
 .spyproject
@@ -108,3 +110,4 @@ ENV/
 # data source
 data/
 *.csv
+*.zip
