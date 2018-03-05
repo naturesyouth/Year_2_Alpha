@@ -12,8 +12,7 @@ from multiprocessing import Pool, Queue
 
 thread_count = 10
 
-hfs = dt.datetime.strptime("01-01-1904", "%m-%d-%Y")  # create a ref time.
-print(hfs)
+hfs = 2082844800  # seconds between 1904 and 1970.
 
 
 def load_data_from_path(path):
@@ -22,13 +21,11 @@ def load_data_from_path(path):
 
     outq = Queue(maxsize=0)
 
-    def en_queue_dataframe(x):
-        print(type(x))
-
     with Pool(processes=thread_count) as pool:
-        pool.map(process_file, glob.iglob(path, recursive=True), 10,)
+        result = pool.map(process_file, glob.iglob(path, recursive=True))
 
-    print(outq.qsize())
+        outq.put(result)
+
     return list(outq.get())
 
 
@@ -36,14 +33,15 @@ def process_file(file_name):
     '''takes a file name and trys to load it into a pandas dataframe,
      converting from mac time to a datetime object.'''
 
-    dataframe = pd.read_csv(file_name)
+    dataframe = pd.read_csv(file_name, names=['Date', 'Mag', 'Temp'])
 
-    dataframe[0] = dataframe[0].apply(lambda x: dt.datetime.fromtimestamp(x + hfs))
+    dataframe['Date'] = dataframe['Date'].apply(lambda x: dt.datetime.fromtimestamp(x - hfs))
 
-    print(dataframe.describe())
-
-
+    return dataframe
 
 
 if __name__ == "__main__":
-    print(load_data_from_path(path="data/raw/**/*.csv"))
+    dataframe = load_data_from_path(path="data/raw/**/*.csv")
+    dataframe = pd.concat(dataframe).sort_values(by='Date')
+
+    pickle.dump(dataframe, open("data/processed_mag.p", "wb"))
