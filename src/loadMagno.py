@@ -1,11 +1,8 @@
 '''This module loads csv type magnotomerter data and preps it for further use.'''
 
 import pandas as pd
-import numpy as np
 import datetime as dt
 import pickle
-import time
-import os
 import glob
 import math
 
@@ -37,7 +34,7 @@ def process_file(file_name):
     dataframe = pd.read_csv(file_name, names=['Date', 'Mag', 'Temp'])
 
     dataframe['Date'] = dataframe['Date'].apply(lambda x: dt.datetime.fromtimestamp(x - hfs))
-    dataframe['Temp'] = dataframe['Temp'].apply(lambda x: round(x, 1-int(math.floor(math.log10(abs(x))))-1))
+    dataframe['Temp'] = dataframe['Temp'].apply(lambda x: int(x * 100))
 
     return dataframe
 
