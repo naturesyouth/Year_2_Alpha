@@ -34,6 +34,7 @@ def make_temp_data(df):
 
     for i in result:
         print(i.describe())
+    print(len(result))
 
 
 def split_subframe(input):
