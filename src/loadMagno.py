@@ -7,6 +7,7 @@ import pickle
 import time
 import os
 import glob
+import math
 
 from multiprocessing import Pool, Queue
 
@@ -36,6 +37,7 @@ def process_file(file_name):
     dataframe = pd.read_csv(file_name, names=['Date', 'Mag', 'Temp'])
 
     dataframe['Date'] = dataframe['Date'].apply(lambda x: dt.datetime.fromtimestamp(x - hfs))
+    dataframe['Temp'] = dataframe['Temp'].apply(lambda x: round(x, 1-int(math.floor(math.log10(abs(x))))-1))
 
     return dataframe
 
