@@ -36,6 +36,9 @@ def process_file(file_name):
     dataframe['Date'] = dataframe['Date'].apply(lambda x: dt.datetime.fromtimestamp(x - hfs))
     dataframe['Temp'] = dataframe['Temp'].apply(lambda x: int(x * 100))
 
+News Feed
+￼
+
     return dataframe
 
 
