@@ -34,10 +34,7 @@ def process_file(file_name):
     dataframe = pd.read_csv(file_name, names=['Date', 'Mag', 'Temp'])
 
     dataframe['Date'] = dataframe['Date'].apply(lambda x: dt.datetime.fromtimestamp(x - hfs))
-    dataframe['Temp'] = dataframe['Temp'].apply(lambda x: int(x * 100))
-
-News Feed
-￼
+    dataframe['Temp'] = dataframe['Temp'].apply(lambda x: int(x * 10))
 
     return dataframe
 
