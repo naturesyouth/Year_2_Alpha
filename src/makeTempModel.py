@@ -51,7 +51,7 @@ def split_iqr(dataframe):
     return dataframe
 
 if __name__ == "__main__":
-    df = pd.read_pickle("data/mag.p")
+    df = pd.read_pickle("data/processed_mag.p")
     make_temp_data(df)
 
 # df[df['colX'] == df['colY']]

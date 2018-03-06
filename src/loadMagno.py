@@ -30,9 +30,9 @@ def load_data_from_path(path):
 def process_file(file_name):
     '''takes a file name and trys to load it into a pandas dataframe,
      converting from mac time to a datetime object.'''
-
-    dataframe = pd.read_csv(file_name, names=['Date', 'Mag', 'Temp'])
-
+    print(file_name)
+    dataframe = pd.read_csv(file_name, names=['Date', 'Mag', 'Temp'], error_bad_lines=False)
+    dataframe.fillna(method='backfill')
     dataframe['Date'] = dataframe['Date'].apply(lambda x: dt.datetime.fromtimestamp(x - hfs))
     dataframe['Temp'] = dataframe['Temp'].apply(lambda x: int(x * 10))
 
@@ -40,7 +40,7 @@ def process_file(file_name):
 
 
 if __name__ == "__main__":
-    dataframe = load_data_from_path(path="data/raw/**/*.csv")
+    dataframe = load_data_from_path(path="data/raw/201[7,8]/*.csv")
     dataframe = pd.concat(dataframe).sort_values(by='Date')
 
     pickle.dump(dataframe, open("data/processed_mag.p", "wb"))
