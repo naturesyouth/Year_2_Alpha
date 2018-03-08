@@ -1,7 +1,10 @@
 '''This module calculates a polynomial expression to charecteise
-    the temperature calibration of the magnotomerter'''
+    the temperature calibration of the magnotomerter
+    46nT for every deg farienhight
+    '''
 
 import math
+import pickle
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -17,31 +20,41 @@ def make_temp_data(df):
         result.append((i,df))
     #print(result)
 
-    pool = Pool()
+    with Pool() as pool:
+        result = pool.map(split_subframe, result)
+        result = [x for x in result if x is not None]
+        #pool.map(make_data_plot, result)
 
-    result = pool.map(split_subframe, result)
-
-    result = [x for x in result if x is not None]
-
-    tmp_set = pd.concat(result)
-
-    sns.boxplot(x="Temp", y="Mag", data=tmp_set)
-
-    plt.show()
 
     #for i in result:
     #    print(i.describe())
     #print(len(result))
+
+    m = 1
+    c = 1
+
+    return (m, c)
 
 
 def split_subframe(input):
     temp, dataframe = input
     dataframe = dataframe[dataframe['Temp'] == temp].sort_values(by=['Mag'])
     x, y = dataframe.shape
-    if x >= 20:
+    if x >= 10:
         return dataframe
     else:
         return None
+
+def make_data_plot(input):
+    name = "Mag-Date-at-{}".format(str(input.iloc[0]['Temp']))
+    print("Processing : {}".format(name))
+    print(input.shape)
+    plt.plot_date(x=input.Date, y=input.Mag)
+    plt.savefig(name)
+
+
+def apply_temp_correction(input):
+    pass
 
 
 def split_iqr(dataframe):
@@ -50,8 +63,13 @@ def split_iqr(dataframe):
                           (dataframe['Mag'] <= qr.iloc[1]['Mag'])]
     return dataframe
 
+
 if __name__ == "__main__":
     df = pd.read_pickle("data/processed_mag.p")
-    make_temp_data(df)
+    multiple, offset = make_temp_data(df)
+
+    df['MagAdjust'] = df['Mag'].apply(lambda x: x + multiple * x + offset)
+
+    pickle.dump(df, open("data/processed_compensated_mag.p", "wb"))
 
 # df[df['colX'] == df['colY']]
