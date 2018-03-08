@@ -68,6 +68,8 @@ if __name__ == "__main__":
     df = pd.read_pickle("data/processed_mag.p")
     multiple, offset = make_temp_data(df)
 
+     [(T-72)*46] nT
+
     df['MagAdjust'] = df['Mag'].apply(lambda x: x + multiple * x + offset)
 
     pickle.dump(df, open("data/processed_compensated_mag.p", "wb"))

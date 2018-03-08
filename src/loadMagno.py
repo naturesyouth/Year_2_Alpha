@@ -40,7 +40,7 @@ def process_file(file_name):
 
 
 if __name__ == "__main__":
-    dataframe = load_data_from_path(path="data/raw/201[7,8]/*.csv")
+    dataframe = load_data_from_path(path="data/raw/201[8]/*.csv")
     dataframe = pd.concat(dataframe).sort_values(by='Date')
 
     pickle.dump(dataframe, open("data/processed_mag.p", "wb"))
