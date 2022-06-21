@@ -10,7 +10,7 @@ jsonschema==2.6.0
 jupyter-core==4.4.0
 matplotlib==2.1.2
 nbformat==4.4.0
-numpy==1.14.1
+numpy==1.22.0
 pandas==0.22.0
 plotly==2.4.1
 pycodestyle==2.3.1
